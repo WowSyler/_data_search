@@ -22,7 +22,7 @@ class Crawler():
             "Starring 4","Starring 5","Starring 6","Starring 7","Starring 8",
             "Starring 9","Starring 10",
             "Genres 1","Genres 2","Genres 3","Genres 4",
-            "Rating","Gross"))
+            "Rating","Gross - $"))
 
 
         for row in filmListActive.iter_rows(min_row=1, min_col=1, max_row=1852, max_col=2):
@@ -69,6 +69,16 @@ class Crawler():
             soupDetail = BeautifulSoup(url_detail.content, 'html.parser')
 
         ####################
+            try:
+                RatingContent = soupDetail.find('span', {'itemprop':'ratingValue'})
+                Rating = RatingContent.text
+                print("Rating:")
+                print(Rating)
+            except IOError:
+                continue
+            except AttributeError:
+                continue
+        ############
             try:
                 StarringContent = soupDetail.findAll('td', {'class':''})
                 Starring = StarringContent
@@ -121,9 +131,9 @@ class Crawler():
                 print("Director:")
                 print(Director)
             except IOError:
-                Director = "None"
+                continue
             except AttributeError:
-                Director = "None"
+                continue
         ############
             try:
                 GrossContent = soupDetail.findAll('div', {'class':'txt-block'})
@@ -133,7 +143,11 @@ class Crawler():
                     title2 = item.h4.text
                     if title2 == "Cumulative Worldwide Gross:":
                         print(item.text)
-                        grossData = item.text
+
+                        fullGross = item.text
+                        grossArray = fullGross.split('$')
+
+                        grossData = grossArray[1]
                         break
             except AttributeError:
                 grossData = ""
@@ -142,16 +156,7 @@ class Crawler():
 
                 
         ############
-            try:
-                RatingContent = soupDetail.find('span', {'itemprop':'ratingValue'})
-                Rating = RatingContent.text
-                print("Rating:")
-                print(Rating)
-            except IOError:
-                Rating = "None"
-            except AttributeError:
-                Rating = "None"
-        ############
+          
 
          
             genresCount = len(GenresArray)
