@@ -51,8 +51,12 @@ class Crawler():
             print() # satir atlamasi icin hucrelerde
             #print(name,date , end=" ")
 
-            url = site + name
-            #print(url)
+
+            dateArray = date.split(", ")
+            year = dateArray[1]
+            #print(year)
+            url = site + name + " " + year
+            print(url)
             url_oku = requests.get(url)
             soup = BeautifulSoup(url_oku.content, 'html.parser')
 
