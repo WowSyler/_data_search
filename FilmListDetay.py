@@ -42,7 +42,7 @@ class Crawler():
             for cell in row:
                 if i==1:
                     name = cell.value
-                    print(cell.value ,end=" ")
+                    #print(cell.value ,end=" ")
                     filmCount+=1;
                 else:
                     date = cell.value
@@ -52,22 +52,20 @@ class Crawler():
             #print(name,date , end=" ")
 
 
-            dateArray = date.split(", ")
-            year = dateArray[1]
             #print(year)
             url = site + name #+ " " + year
-            print(url)
-            url_oku = requests.get(url)
-            soup = BeautifulSoup(url_oku.content, 'html.parser')
-
+            #print(url)
             try:
+                url_oku = requests.get(url)
+                soup = BeautifulSoup(url_oku.content, 'html.parser')
+            
                 main = soup.find('td', {'class':'result_text'})
                 hrefValue = main.a.get("href")
             except:
                 continue
            
             detailUrl = mainSite + hrefValue
-            print(detailUrl)
+            #print(detailUrl)
 
             url_detail = requests.get(detailUrl)
             soupDetail = BeautifulSoup(url_detail.content, 'html.parser')
@@ -76,36 +74,35 @@ class Crawler():
             try:
                 RatingContent = soupDetail.find('span', {'itemprop':'ratingValue'})
                 Rating = RatingContent.text
-                print("Rating:")
-                print(Rating)
+                #print("Rating:")
+                #print(Rating)
             except IOError:
                 continue
             except AttributeError:
+                continue
+            except:
                 continue
         ############
             try:
                 StarringContent = soupDetail.findAll('td', {'class':''})
                 Starring = StarringContent
                 c=1;
-                print("Starring:")
+                #print("Starring:")
                 for item in Starring:
                     if c==11:
                         break
                     staringData = item.a.text
                     StarringArray.append(staringData)
-                    print(staringData)
+                    #print(staringData)
                     c += 1;
-            except IOError:
-                StarringArray = ["None"]
-            except AttributeError:
-                StarringArray = ["None"]
-        
+            except:
+                continue
         ###########
             try:
                 GenresContent = soupDetail.findAll('div', {'class':'see-more inline canwrap'})
                 Genres = GenresContent
                 title = ""
-                print("Genres:")
+                #print("Genres:")
                 for item in Genres:
                     data = item.findAll()
                     title = item.h4.text
@@ -118,11 +115,9 @@ class Crawler():
                                 actorCount += 1;
                                 genresData = last.text
                                 GenresArray.append(genresData)
-                                print(genresData)
-            except IOError:
-                GenresArray = ["None"]
-            except AttributeError:
-                GenresArray = ["None"]
+                                #print(genresData)
+            except:
+                continue
         #############
                 
             #StudioContent = soupDetail.find('div', {'class':''})
@@ -132,11 +127,13 @@ class Crawler():
             try:
                 DirectorContent = soupDetail.find('div', {'class':'credit_summary_item'})
                 Director = DirectorContent.a.text
-                print("Director:")
-                print(Director)
+                #print("Director:")
+                #print(Director)
             except IOError:
                 continue
             except AttributeError:
+                continue
+            except:
                 continue
         ############
             try:
@@ -146,17 +143,16 @@ class Crawler():
                 for item in Gross:
                     title2 = item.h4.text
                     if title2 == "Cumulative Worldwide Gross:":
-                        print(item.text)
+                        #print(item.text)
 
                         fullGross = item.text
                         grossArray = fullGross.split('$')
 
                         grossData = grossArray[1]
                         break
-            except AttributeError:
-                grossData = ""
-            except IOError:
-                 grossData = ""
+            except:
+                continue
+
 
                 
         ############
